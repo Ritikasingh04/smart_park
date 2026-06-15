@@ -1,0 +1,42 @@
+{% extends 'adminpanel/base_admin.html' %}
+{% block title %}Revenue - Admin{% endblock %}
+{% block page_title %}Revenue Analytics{% endblock %}
+{% block anav_revenue %}active{% endblock %}
+
+{% block content %}
+<div style="margin-bottom:16px;"><a href="{% url 'adminpanel:dashboard' %}" class="btn-back">&#x2190; Back</a></div>
+
+<div class="stat-grid" style="margin-bottom:24px;">
+  <div class="stat-card purple">
+    <div class="stat-icon">&#x1F4B0;</div>
+    <div><div class="stat-value">&#x20B9;{{ total|floatformat:0 }}</div><div class="stat-label">Total Revenue</div></div>
+  </div>
+  <div class="stat-card teal">
+    <div class="stat-icon">&#x1F4C4;</div>
+    <div><div class="stat-value">{{ revenues.count }}</div><div class="stat-label">Transactions</div></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title" style="margin-bottom:16px;">&#x1F4B3; Revenue Records</div>
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>#</th><th>Booking Ref</th><th>User</th><th>Slot</th><th>Vehicle</th><th>Duration</th><th>Amount</th><th>Date</th></tr></thead>
+      <tbody>
+      {% for r in revenues %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td><strong style="color:#A64AC9;">{{ r.booking.booking_ref }}</strong></td>
+        <td>{{ r.booking.user.username }}</td>
+        <td>{{ r.booking.slot.slot_number }}</td>
+        <td>{{ r.booking.vehicle_number }}</td>
+        <td>{{ r.booking.duration_hours }} hr{% if r.booking.duration_hours != 1 %}s{% endif %}</td>
+        <td><strong>&#x20B9;{{ r.amount }}</strong></td>
+        <td>{{ r.date|date:"d M Y" }}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

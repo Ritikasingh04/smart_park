@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Smart Parking System{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <h1>&#x1F17F; Smart Parking System</h1>
+      <span>AI-Powered Parking</span>
+    </div>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">{{ request.user.first_name|first|upper|default:request.user.username|first|upper }}</div>
+      <div class="sidebar-user-info">
+        <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+        <small>{{ request.user.email }}</small>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="{% url 'dashboard:index' %}" class="nav-item {% block nav_dashboard %}{% endblock %}">
+        <span class="nav-icon">&#x1F4CA;</span> Dashboard
+      </a>
+      <a href="{% url 'booking:index' %}" class="nav-item {% block nav_booking %}{% endblock %}">
+        <span class="nav-icon">&#x1F3AB;</span> Book a Slot
+      </a>
+      <a href="{% url 'booking:my_bookings' %}" class="nav-item {% block nav_mybookings %}{% endblock %}">
+        <span class="nav-icon">&#x1F4CB;</span> My Bookings
+      </a>
+      <a href="{% url 'map:index' %}" class="nav-item {% block nav_map %}{% endblock %}">
+        <span class="nav-icon">&#x1F5FA;&#xFE0F;</span> Parking Map
+      </a>
+      <a href="{% url 'history:index' %}" class="nav-item {% block nav_history %}{% endblock %}">
+        <span class="nav-icon">&#x1F550;</span> History
+      </a>
+      <a href="{% url 'userprofile:index' %}" class="nav-item {% block nav_profile %}{% endblock %}">
+        <span class="nav-icon">&#x1F464;</span> Profile
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="{% url 'logout' %}" class="btn btn-danger btn-sm" style="width:100%;justify-content:center;">
+        Logout
+      </a>
+    </div>
+  </aside>
+  <main class="main-content">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">&#9776;</button>
+        <h2>{% block page_title %}Dashboard{% endblock %}</h2>
+      </div>
+      <div class="topbar-actions">
+        {% block topbar_actions %}{% endblock %}
+        <a href="{% url 'logout' %}" class="btn btn-outline btn-sm">Logout</a>
+      </div>
+    </div>
+    <div class="page-body">
+      {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+</div>
+<script>
+document.addEventListener('click',function(e){
+  var sb=document.getElementById('sidebar');
+  if(window.innerWidth<=768&&sb.classList.contains('open')&&!sb.contains(e.target)){sb.classList.remove('open');}
+});
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

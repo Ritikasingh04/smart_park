@@ -1,0 +1,68 @@
+{% extends 'adminpanel/base_admin.html' %}
+{% block title %}Manage Slots - Admin{% endblock %}
+{% block page_title %}Manage Parking Slots{% endblock %}
+{% block anav_slots %}active{% endblock %}
+
+{% block content %}
+<div style="margin-bottom:16px;"><a href="{% url 'adminpanel:dashboard' %}" class="btn-back">&#x2190; Back</a></div>
+
+{% if messages %}
+<ul class="messages">{% for m in messages %}<li class="{{ m.tags }}">{{ m }}</li>{% endfor %}</ul>
+{% endif %}
+
+<!-- Visual Map -->
+<div class="card" style="margin-bottom:24px;">
+  <div class="card-title" style="margin-bottom:14px;">&#x1F5FA;&#xFE0F; Visual Slot Overview</div>
+  <div class="slot-legend" style="margin-bottom:14px;">
+    <div class="slot-legend-item"><div class="legend-dot" style="background:#22c55e;"></div>Available</div>
+    <div class="slot-legend-item"><div class="legend-dot" style="background:#eab308;"></div>Reserved</div>
+    <div class="slot-legend-item"><div class="legend-dot" style="background:#ef4444;"></div>Occupied</div>
+  </div>
+  <div class="parking-grid-container">
+    <div class="parking-grid">
+      {% for slot in slots %}
+      <div class="parking-slot {{ slot.status }}" title="{{ slot.slot_number }} — {{ slot.status }}">
+        <span class="slot-icon">&#x1F697;</span>
+        <span>{{ slot.slot_number }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Slot Table with Status Control -->
+<div class="card">
+  <div class="card-title" style="margin-bottom:16px;">&#x1F527; Change Slot Status</div>
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Slot</th><th>Row</th><th>Position</th><th>Current Status</th><th>Change To</th></tr></thead>
+      <tbody>
+      {% for slot in slots %}
+      <tr>
+        <td><strong>{{ slot.slot_number }}</strong></td>
+        <td>{{ slot.row }}</td>
+        <td>{{ slot.position }}</td>
+        <td>
+          {% if slot.status == 'available' %}<span class="badge badge-success">Available</span>
+          {% elif slot.status == 'occupied' %}<span class="badge badge-danger">Occupied</span>
+          {% else %}<span class="badge badge-warning">Reserved</span>{% endif %}
+        </td>
+        <td>
+          <form method="post" style="display:flex;gap:6px;align-items:center;">
+            {% csrf_token %}
+            <input type="hidden" name="slot_id" value="{{ slot.id }}"/>
+            <select name="status" class="form-control" style="width:140px;padding:6px 10px;font-size:0.85rem;">
+              <option value="available" {% if slot.status == 'available' %}selected{% endif %}>Available</option>
+              <option value="occupied"  {% if slot.status == 'occupied'  %}selected{% endif %}>Occupied</option>
+              <option value="reserved"  {% if slot.status == 'reserved'  %}selected{% endif %}>Reserved</option>
+            </select>
+            <button type="submit" class="btn btn-primary btn-sm">Update</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

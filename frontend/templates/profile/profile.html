@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Profile - Smart Parking System{% endblock %}
+{% block page_title %}My Profile{% endblock %}
+{% block nav_profile %}active{% endblock %}
+
+{% block content %}
+<div style="margin-bottom:16px;"><a href="{% url 'dashboard:index' %}" class="btn-back">&#x2190; Back</a></div>
+
+<div style="display:grid;grid-template-columns:280px 1fr;gap:24px;align-items:start;flex-wrap:wrap;">
+  <!-- Profile Card -->
+  <div class="card" style="text-align:center;">
+    <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#A64AC9,#17E9E0);display:flex;align-items:center;justify-content:center;font-size:2.2rem;color:white;font-weight:800;margin:0 auto 16px;">
+      {{ user.first_name|first|upper|default:user.username|first|upper }}
+    </div>
+    <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:4px;">{{ user.get_full_name|default:user.username }}</h3>
+    <p style="color:#6b7280;font-size:0.85rem;margin-bottom:4px;">{{ user.email }}</p>
+    <p style="color:#6b7280;font-size:0.8rem;margin-bottom:16px;">Joined {{ user.date_joined|date:"d M Y" }}</p>
+    <div style="border-top:1px solid #f0f0f0;padding-top:16px;margin-top:8px;">
+      <a href="{% url 'history:index' %}" class="btn btn-outline btn-sm" style="width:100%;justify-content:center;margin-bottom:8px;display:flex;">&#x1F4CB; My History</a>
+      <a href="{% url 'logout' %}" class="btn btn-danger btn-sm" style="width:100%;justify-content:center;display:flex;">&#x1F6AA; Logout</a>
+    </div>
+  </div>
+
+  <!-- Edit Form -->
+  <div class="card">
+    <div class="card-title" style="margin-bottom:4px;">&#x270F;&#xFE0F; Edit Profile</div>
+    <div class="card-subtitle" style="margin-bottom:20px;">Update your personal information</div>
+    {% if messages %}
+    <ul class="messages">{% for m in messages %}<li class="{{ m.tags }}">{{ m }}</li>{% endfor %}</ul>
+    {% endif %}
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input class="form-control" name="first_name" type="text" value="{{ user.first_name }}" placeholder="First name"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input class="form-control" name="last_name" type="text" value="{{ user.last_name }}" placeholder="Last name"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-control" name="email" type="email" value="{{ user.email }}" placeholder="Email address"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone</label>
+        <input class="form-control" name="phone" type="tel" value="{{ user.profile.phone|default:'' }}" placeholder="Phone number"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Address</label>
+        <textarea class="form-control" name="address" rows="3" placeholder="Your address">{{ user.profile.address|default:'' }}</textarea>
+      </div>
+      <div style="display:flex;gap:12px;">
+        <button type="submit" class="btn btn-primary">&#x1F4BE; Save Changes</button>
+        <a href="{% url 'dashboard:index' %}" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+@media(max-width:768px){
+  div[style*="grid-template-columns:280px"]{display:block!important;}
+}
+{% endblock %}

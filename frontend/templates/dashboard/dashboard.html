@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - Smart Parking System{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block nav_dashboard %}active{% endblock %}
+
+{% block content %}
+<!-- Stat Cards -->
+<div class="stat-grid">
+  <div class="stat-card purple">
+    <div class="stat-icon">&#x1F17F;</div>
+    <div><div class="stat-value">{{ total_slots }}</div><div class="stat-label">Total Slots</div></div>
+  </div>
+  <div class="stat-card teal">
+    <div class="stat-icon">&#x1F7E2;</div>
+    <div><div class="stat-value">{{ available_slots }}</div><div class="stat-label">Available</div></div>
+  </div>
+  <div class="stat-card orange">
+    <div class="stat-icon">&#x1F534;</div>
+    <div><div class="stat-value">{{ occupied_slots }}</div><div class="stat-label">Occupied</div></div>
+  </div>
+  <div class="stat-card yellow">
+    <div class="stat-icon">&#x1F7E1;</div>
+    <div><div class="stat-value">{{ reserved_slots }}</div><div class="stat-label">Reserved</div></div>
+  </div>
+</div>
+
+<!-- AI Predictions -->
+<h3 style="font-size:1.1rem;font-weight:700;margin-bottom:14px;color:#1a1a2e;">&#x1F916; AI Predictions</h3>
+<div class="ai-grid">
+  <div class="ai-card">
+    <div class="ai-card-title">Current Occupancy</div>
+    <div class="ai-card-value">{{ predictions.current_occupancy }}%</div>
+    <div class="ai-card-sub">Predicted by AI model</div>
+  </div>
+  <div class="ai-card">
+    <div class="ai-card-title">Crowd Level</div>
+    <div class="ai-card-value crowd-{{ predictions.crowd_level|lower }}">{{ predictions.crowd_level }}</div>
+    <div class="ai-card-sub">Current crowd analysis</div>
+  </div>
+  <div class="ai-card">
+    <div class="ai-card-title">Next Free Slot</div>
+    <div class="ai-card-value">{{ predictions.free_slot_time }}</div>
+    <div class="ai-card-sub">Predicted availability</div>
+  </div>
+  <div class="ai-card">
+    <div class="ai-card-title">Peak Hours Today</div>
+    <div class="ai-card-value" style="font-size:1rem;">{{ predictions.peak_hours|join:", " }}</div>
+    <div class="ai-card-sub">Busiest periods</div>
+  </div>
+</div>
+
+<!-- Charts -->
+<div class="chart-grid">
+  <div class="chart-card">
+    <h3>&#x1F4C8; Occupancy Forecast (Next 12 Hours)</h3>
+    <canvas id="forecastChart" height="200"></canvas>
+  </div>
+  <div class="chart-card">
+    <h3>&#x1F55B; Full Day Occupancy Pattern</h3>
+    <canvas id="dayChart" height="200"></canvas>
+  </div>
+</div>
+
+<!-- Active Booking -->
+{% if my_active_booking %}
+<div class="card" style="margin-top:24px;border-left:4px solid #A64AC9;">
+  <div class="card-title">&#x1F3AB; Your Active Booking</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:12px;">
+    <div><small style="color:#6b7280;">Ref</small><br><strong>{{ my_active_booking.booking_ref }}</strong></div>
+    <div><small style="color:#6b7280;">Slot</small><br><strong>{{ my_active_booking.slot.slot_number }}</strong></div>
+    <div><small style="color:#6b7280;">Vehicle</small><br><strong>{{ my_active_booking.vehicle_number }}</strong></div>
+    <div><small style="color:#6b7280;">Date</small><br><strong>{{ my_active_booking.booking_date }}</strong></div>
+    <div><small style="color:#6b7280;">Duration</small><br><strong>{{ my_active_booking.duration_hours }} hrs</strong></div>
+    <div><small style="color:#6b7280;">Amount</small><br><strong>&#x20B9;{{ my_active_booking.amount }}</strong></div>
+  </div>
+  <a href="{% url 'booking:cancel' my_active_booking.id %}" class="btn btn-danger btn-sm" style="margin-top:12px;" onclick="return confirm('Cancel this booking?')">Cancel Booking</a>
+</div>
+{% else %}
+<div class="card" style="margin-top:24px;text-align:center;padding:32px;">
+  <p style="color:#6b7280;margin-bottom:14px;">No active booking. Reserve a slot now!</p>
+  <a href="{% url 'booking:index' %}" class="btn btn-primary">&#x1F3AB; Book a Slot</a>
+</div>
+{% endif %}
+
+<!-- Parking Slots Grid -->
+<div class="card" style="margin-top:24px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+    <div class="card-title">&#x1F697; All Parking Slots</div>
+    <a href="{% url 'map:index' %}" class="btn btn-outline btn-sm">View Full Map</a>
+  </div>
+  <div class="slot-legend">
+    <div class="slot-legend-item"><div class="legend-dot" style="background:#22c55e;"></div>Available</div>
+    <div class="slot-legend-item"><div class="legend-dot" style="background:#eab308;"></div>Reserved</div>
+    <div class="slot-legend-item"><div class="legend-dot" style="background:#ef4444;"></div>Occupied</div>
+  </div>
+  <div class="parking-grid-container">
+    <div class="parking-grid">
+      {% for slot in slots %}
+      <div class="parking-slot {{ slot.status }}" title="Slot {{ slot.slot_number }} - {{ slot.status|capfirst }}">
+        <span class="slot-icon">&#x1F697;</span>
+        <span>{{ slot.slot_number }}</span>
+      </div>
+      {% empty %}
+      <p style="color:#6b7280;grid-column:1/-1;">No slots configured.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Recent Bookings -->
+{% if recent_bookings %}
+<div class="card" style="margin-top:24px;">
+  <div class="card-title" style="margin-bottom:14px;">&#x1F4CB; Recent Bookings</div>
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Ref</th><th>Slot</th><th>Vehicle</th><th>Date</th><th>Status</th></tr></thead>
+      <tbody>
+      {% for b in recent_bookings %}
+      <tr>
+        <td><strong>{{ b.booking_ref }}</strong></td>
+        <td>{{ b.slot.slot_number }}</td>
+        <td>{{ b.vehicle_number }}</td>
+        <td>{{ b.booking_date }}</td>
+        <td>
+          {% if b.status == 'active' %}<span class="badge badge-success">Active</span>
+          {% elif b.status == 'cancelled' %}<span class="badge badge-danger">Cancelled</span>
+          {% else %}<span class="badge badge-gray">Completed</span>{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <a href="{% url 'history:index' %}" class="btn btn-outline btn-sm" style="margin-top:14px;">View Full History</a>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+var forecastLabels = {{ predictions.next_12_labels|safe }};
+var forecastData   = {{ predictions.next_12_data|safe }};
+var dayLabels      = {{ predictions.day_labels|safe }};
+var dayData        = {{ predictions.day_occupancy|safe }};
+
+new Chart(document.getElementById('forecastChart'),{
+  type:'line',
+  data:{labels:forecastLabels,datasets:[{label:'Occupancy %',data:forecastData,
+    borderColor:'#A64AC9',backgroundColor:'rgba(166,74,201,.12)',fill:true,
+    tension:.4,pointBackgroundColor:'#A64AC9',pointRadius:4}]},
+  options:{responsive:true,plugins:{legend:{display:false}},
+    scales:{y:{min:0,max:100,ticks:{callback:function(v){return v+'%'}}}}}
+});
+new Chart(document.getElementById('dayChart'),{
+  type:'bar',
+  data:{labels:dayLabels,datasets:[{label:'Occupancy %',data:dayData,
+    backgroundColor:dayData.map(function(v){return v>70?'rgba(239,68,68,.75)':v>40?'rgba(234,179,8,.75)':'rgba(34,197,94,.75)';}),
+    borderRadius:4}]},
+  options:{responsive:true,plugins:{legend:{display:false}},
+    scales:{y:{min:0,max:100,ticks:{callback:function(v){return v+'%'}}}}}
+});
+</script>
+{% endblock %}

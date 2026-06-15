@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% block title %}Book a Slot - Smart Parking System{% endblock %}
+{% block page_title %}Book a Parking Slot{% endblock %}
+{% block nav_booking %}active{% endblock %}
+
+{% block content %}
+<div style="margin-bottom:16px;"><a href="{% url 'dashboard:index' %}" class="btn-back">&#x2190; Back to Dashboard</a></div>
+
+{% if messages %}
+<ul class="messages">{% for m in messages %}<li class="{{ m.tags }}">{{ m }}</li>{% endfor %}</ul>
+{% endif %}
+
+<div style="display:grid;grid-template-columns:1fr 380px;gap:24px;align-items:start;">
+  <!-- Slot Selector -->
+  <div class="card">
+    <div class="card-title" style="margin-bottom:6px;">&#x1F697; Select a Slot</div>
+    <div class="card-subtitle">Click on a green (available) slot to select it.</div>
+    <div class="slot-legend" style="margin:14px 0;">
+      <div class="slot-legend-item"><div class="legend-dot" style="background:#22c55e;"></div>Available</div>
+      <div class="slot-legend-item"><div class="legend-dot" style="background:#eab308;"></div>Reserved</div>
+      <div class="slot-legend-item"><div class="legend-dot" style="background:#ef4444;"></div>Occupied</div>
+    </div>
+    <div class="parking-grid-container">
+      <div class="parking-grid" id="slotGrid">
+        {% for slot in slots %}
+        <div class="parking-slot {{ slot.status }}"
+             data-id="{{ slot.id }}" data-num="{{ slot.slot_number }}" data-status="{{ slot.status }}"
+             onclick="selectSlot(this)"
+             title="Slot {{ slot.slot_number }} - {{ slot.status|capfirst }}">
+          <span class="slot-icon">&#x1F697;</span>
+          <span>{{ slot.slot_number }}</span>
+        </div>
+        {% empty %}
+        <p style="grid-column:1/-1;color:#6b7280;">No slots available. Please contact admin.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Booking Form -->
+  <div class="card" style="position:sticky;top:80px;">
+    <div class="card-title" style="margin-bottom:4px;">&#x1F4DD; Booking Details</div>
+    <div class="card-subtitle" style="margin-bottom:16px;">Rate: &#x20B9;50 per hour</div>
+
+    <div id="selectedSlotInfo" class="slot-selected-info" style="display:none;">
+      <strong>&#x1F7E2; Selected: Slot <span id="selectedSlotNum">-</span></strong>
+    </div>
+
+    <form method="post" id="bookingForm">
+      {% csrf_token %}
+      <input type="hidden" name="slot_id" id="slotIdInput"/>
+      <div class="form-group">
+        <label class="form-label">Full Name *</label>
+        <input class="form-control" name="name" type="text" placeholder="Your full name" required value="{{ request.user.get_full_name }}"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Vehicle Number *</label>
+        <input class="form-control" name="vehicle_number" type="text" placeholder="e.g. KA01AB1234" required/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date *</label>
+        <input class="form-control" name="booking_date" type="date" value="{{ today }}" required min="{{ today }}"/>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Start Time *</label>
+          <input class="form-control" name="start_time" type="time" required value="09:00"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Duration (hrs) *</label>
+          <select class="form-control" name="duration" id="durationSelect" onchange="updateCost()">
+            <option value="1">1 hour</option>
+            <option value="2">2 hours</option>
+            <option value="3">3 hours</option>
+            <option value="4">4 hours</option>
+            <option value="6">6 hours</option>
+            <option value="8">8 hours</option>
+            <option value="12">12 hours</option>
+            <option value="24">24 hours</option>
+          </select>
+        </div>
+      </div>
+      <div style="background:#f3e8ff;border-radius:10px;padding:12px;margin-bottom:16px;text-align:center;">
+        <small style="color:#6b7280;">Estimated Cost</small>
+        <div style="font-size:1.5rem;font-weight:800;color:#A64AC9;">&#x20B9;<span id="costDisplay">50</span></div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:13px;" id="submitBtn" disabled>
+        &#x1F3AB; Reserve Slot
+      </button>
+      <p style="font-size:0.78rem;color:#6b7280;text-align:center;margin-top:8px;">Select a green slot to continue</p>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function selectSlot(el){
+  if(el.dataset.status !== 'available'){
+    alert('This slot is '+el.dataset.status+'. Please select an available (green) slot.');
+    return;
+  }
+  document.querySelectorAll('.parking-slot').forEach(function(s){s.style.outline='none';});
+  el.style.outline='3px solid #A64AC9';
+  document.getElementById('slotIdInput').value = el.dataset.id;
+  document.getElementById('selectedSlotNum').textContent = el.dataset.num;
+  document.getElementById('selectedSlotInfo').style.display='block';
+  document.getElementById('submitBtn').disabled=false;
+  document.getElementById('submitBtn').textContent='Reserve Slot '+el.dataset.num;
+}
+function updateCost(){
+  var hrs=parseFloat(document.getElementById('durationSelect').value)||1;
+  document.getElementById('costDisplay').textContent=(hrs*50).toFixed(0);
+}
+</script>
+{% endblock %}

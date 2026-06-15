@@ -1,0 +1,140 @@
+{% extends 'adminpanel/base_admin.html' %}
+{% block title %}Admin Dashboard - Smart Parking System{% endblock %}
+{% block page_title %}Admin Dashboard{% endblock %}
+{% block anav_dash %}active{% endblock %}
+
+{% block content %}
+<!-- Stat Grid -->
+<div class="stat-grid">
+  <div class="stat-card purple">
+    <div class="stat-icon">&#x1F17F;</div>
+    <div><div class="stat-value">{{ total_slots }}</div><div class="stat-label">Total Slots</div></div>
+  </div>
+  <div class="stat-card teal">
+    <div class="stat-icon">&#x1F7E2;</div>
+    <div><div class="stat-value">{{ available_slots }}</div><div class="stat-label">Available</div></div>
+  </div>
+  <div class="stat-card orange">
+    <div class="stat-icon">&#x1F534;</div>
+    <div><div class="stat-value">{{ occupied_slots }}</div><div class="stat-label">Occupied</div></div>
+  </div>
+  <div class="stat-card yellow">
+    <div class="stat-icon">&#x1F7E1;</div>
+    <div><div class="stat-value">{{ reserved_slots }}</div><div class="stat-label">Reserved</div></div>
+  </div>
+</div>
+
+<!-- Revenue Stats -->
+<div class="stat-grid" style="margin-top:0;">
+  <div class="stat-card purple">
+    <div class="stat-icon">&#x1F4B0;</div>
+    <div><div class="stat-value">&#x20B9;{{ total_revenue|floatformat:0 }}</div><div class="stat-label">Total Revenue</div></div>
+  </div>
+  <div class="stat-card teal">
+    <div class="stat-icon">&#x1F4C5;</div>
+    <div><div class="stat-value">&#x20B9;{{ today_revenue|floatformat:0 }}</div><div class="stat-label">Today's Revenue</div></div>
+  </div>
+  <div class="stat-card orange">
+    <div class="stat-icon">&#x1F4CB;</div>
+    <div><div class="stat-value">{{ total_bookings }}</div><div class="stat-label">Total Bookings</div></div>
+  </div>
+  <div class="stat-card yellow">
+    <div class="stat-icon">&#x26A1;</div>
+    <div><div class="stat-value">{{ active_bookings }}</div><div class="stat-label">Active Now</div></div>
+  </div>
+</div>
+
+<!-- Occupancy rate bar -->
+<div class="card" style="margin-bottom:24px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+    <div class="card-title">Slot Occupancy Rate</div>
+    <strong style="color:#A64AC9;">{{ occupancy_pct }}%</strong>
+  </div>
+  <div style="background:#e5e7eb;border-radius:50px;height:12px;overflow:hidden;">
+    <div style="height:100%;width:{{ occupancy_pct }}%;background:linear-gradient(90deg,#A64AC9,#17E9E0);border-radius:50px;transition:width 1s;"></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:0.78rem;color:#6b7280;">
+    <span>0%</span><span>50%</span><span>100%</span>
+  </div>
+</div>
+
+<!-- Charts -->
+<div class="chart-grid">
+  <div class="chart-card">
+    <h3>&#x1F4C8; Daily Revenue (Last 7 Days)</h3>
+    <canvas id="dailyRevChart" height="220"></canvas>
+  </div>
+  <div class="chart-card">
+    <h3>&#x1F4C6; Monthly Revenue (Last 6 Months)</h3>
+    <canvas id="monthlyRevChart" height="220"></canvas>
+  </div>
+  <div class="chart-card">
+    <h3>&#x1F4CA; Slot Status Breakdown</h3>
+    <canvas id="slotPieChart" height="220"></canvas>
+  </div>
+  <div class="chart-card">
+    <h3>&#x1F4C8; Booking Trends (Last 7 Days)</h3>
+    <canvas id="trendChart" height="220"></canvas>
+  </div>
+</div>
+
+<!-- Quick Links -->
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:24px;">
+  <a href="{% url 'adminpanel:slots' %}" class="card" style="text-align:center;text-decoration:none;transition:all .2s;cursor:pointer;">
+    <div style="font-size:2rem;margin-bottom:8px;">&#x1F17F;</div>
+    <div style="font-weight:700;color:#1a1a2e;">Manage Slots</div>
+    <div style="font-size:0.8rem;color:#6b7280;margin-top:4px;">Change slot status</div>
+  </a>
+  <a href="{% url 'adminpanel:users' %}" class="card" style="text-align:center;text-decoration:none;transition:all .2s;">
+    <div style="font-size:2rem;margin-bottom:8px;">&#x1F465;</div>
+    <div style="font-weight:700;color:#1a1a2e;">All Users</div>
+    <div style="font-size:0.8rem;color:#6b7280;margin-top:4px;">View user accounts</div>
+  </a>
+  <a href="{% url 'adminpanel:bookings' %}" class="card" style="text-align:center;text-decoration:none;transition:all .2s;">
+    <div style="font-size:2rem;margin-bottom:8px;">&#x1F4CB;</div>
+    <div style="font-weight:700;color:#1a1a2e;">All Bookings</div>
+    <div style="font-size:0.8rem;color:#6b7280;margin-top:4px;">View all reservations</div>
+  </a>
+  <a href="{% url 'adminpanel:revenue' %}" class="card" style="text-align:center;text-decoration:none;transition:all .2s;">
+    <div style="font-size:2rem;margin-bottom:8px;">&#x1F4B0;</div>
+    <div style="font-weight:700;color:#1a1a2e;">Revenue</div>
+    <div style="font-size:0.8rem;color:#6b7280;margin-top:4px;">Financial reports</div>
+  </a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+var days   = {{ chart_days|safe }};
+var rev    = {{ chart_rev|safe }};
+var months = {{ chart_months|safe }};
+var mrev   = {{ chart_monthly_rev|safe }};
+var trends = {{ chart_booking_trends|safe }};
+
+new Chart(document.getElementById('dailyRevChart'),{
+  type:'bar',
+  data:{labels:days,datasets:[{label:'Revenue (₹)',data:rev,backgroundColor:'rgba(166,74,201,.75)',borderRadius:6}]},
+  options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:function(v){return '₹'+v}}}}}
+});
+new Chart(document.getElementById('monthlyRevChart'),{
+  type:'line',
+  data:{labels:months,datasets:[{label:'Revenue (₹)',data:mrev,borderColor:'#17E9E0',backgroundColor:'rgba(23,233,224,.12)',fill:true,tension:.4,pointRadius:5,pointBackgroundColor:'#17E9E0'}]},
+  options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:function(v){return '₹'+v}}}}}
+});
+new Chart(document.getElementById('slotPieChart'),{
+  type:'doughnut',
+  data:{
+    labels:['Available','Reserved','Occupied'],
+    datasets:[{data:[{{ available_slots }},{{ reserved_slots }},{{ occupied_slots }}],
+      backgroundColor:['#22c55e','#eab308','#ef4444'],
+      borderWidth:3,borderColor:'#fff'}]
+  },
+  options:{responsive:true,cutout:'65%',plugins:{legend:{position:'bottom'}}}
+});
+new Chart(document.getElementById('trendChart'),{
+  type:'line',
+  data:{labels:days,datasets:[{label:'Bookings',data:trends,borderColor:'#FCCD04',backgroundColor:'rgba(252,205,4,.15)',fill:true,tension:.4,pointRadius:5,pointBackgroundColor:'#FCCD04'}]},
+  options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}}
+});
+</script>
+{% endblock %}

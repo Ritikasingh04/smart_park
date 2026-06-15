@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}History - Smart Parking System{% endblock %}
+{% block page_title %}Booking History{% endblock %}
+{% block nav_history %}active{% endblock %}
+
+{% block content %}
+<div style="margin-bottom:16px;"><a href="{% url 'dashboard:index' %}" class="btn-back">&#x2190; Back</a></div>
+
+<div class="card">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+    <div class="card-title">&#x1F4C5; Complete Booking History</div>
+    <span style="font-size:0.85rem;color:#6b7280;">{{ bookings.count }} record(s)</span>
+  </div>
+
+  {% if bookings %}
+  <!-- Summary stats -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:20px;">
+    <div style="background:#f3e8ff;border-radius:10px;padding:14px;text-align:center;">
+      <div style="font-size:1.4rem;font-weight:800;color:#A64AC9;">{{ bookings.count }}</div>
+      <div style="font-size:0.75rem;color:#6b7280;">Total Bookings</div>
+    </div>
+    <div style="background:#dcfce7;border-radius:10px;padding:14px;text-align:center;">
+      <div style="font-size:1.4rem;font-weight:800;color:#166534;">{{ bookings|length }}</div>
+      <div style="font-size:0.75rem;color:#6b7280;">Records Shown</div>
+    </div>
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr><th>#</th><th>Booking Ref</th><th>Slot</th><th>Vehicle No.</th><th>Date</th><th>Start Time</th><th>Duration</th><th>Amount</th><th>Booked On</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+      {% for b in bookings %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td><strong style="color:#A64AC9;">{{ b.booking_ref }}</strong></td>
+        <td><span class="badge badge-purple">{{ b.slot.slot_number }}</span></td>
+        <td>{{ b.vehicle_number }}</td>
+        <td>{{ b.booking_date|date:"d M Y" }}</td>
+        <td>{{ b.start_time|time:"H:i" }}</td>
+        <td>{{ b.duration_hours }} hr{% if b.duration_hours != 1 %}s{% endif %}</td>
+        <td><strong>&#x20B9;{{ b.amount }}</strong></td>
+        <td>{{ b.booked_at|date:"d M Y H:i" }}</td>
+        <td>
+          {% if b.status == 'active' %}<span class="badge badge-success">&#x1F7E2; Active</span>
+          {% elif b.status == 'cancelled' %}<span class="badge badge-danger">&#x274C; Cancelled</span>
+          {% else %}<span class="badge badge-gray">&#x2705; Completed</span>{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div style="text-align:center;padding:48px 20px;">
+    <div style="font-size:3rem;margin-bottom:16px;">&#x1F4C5;</div>
+    <p style="color:#6b7280;font-size:1rem;margin-bottom:16px;">No booking history found.</p>
+    <a href="{% url 'booking:index' %}" class="btn btn-primary">&#x1F3AB; Make Your First Booking</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

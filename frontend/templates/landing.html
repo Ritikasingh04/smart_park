@@ -1,0 +1,178 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Parking System - AI-Powered Parking Solution</title>
+  <link rel="stylesheet" href="{% static 'css/landing.css' %}"/>
+</head>
+<body class="landing-body">
+
+<!-- NAVBAR -->
+<nav class="land-nav">
+  <a href="/" class="land-logo">
+    <div class="land-logo-icon">&#x1F17F;</div>
+    <div class="land-logo-text">Smart Parking<br><span>System</span></div>
+  </a>
+  <div class="land-nav-links">
+    <a href="#features">Features</a>
+    <a href="#how">How It Works</a>
+    <a href="{% url 'admin_login' %}">Admin</a>
+  </div>
+  <div class="land-nav-btns">
+    <a href="{% url 'login' %}" class="land-btn-login">Login</a>
+    <a href="{% url 'register' %}" class="land-btn-signup">Sign Up Free</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="land-hero">
+  <div class="land-hero-content">
+    <div class="land-hero-tag">AI-Powered Smart Parking</div>
+    <h1>Find &amp; Reserve Your <span class="highlight">Parking Spot</span> Instantly</h1>
+    <p>Smart Parking System uses AI to predict availability, guide you to the nearest free slot, and make parking effortless — all in real time.</p>
+    <div class="land-hero-btns">
+      <a href="{% url 'register' %}" class="land-hero-btn-primary">&#x1F697; Get Started Free</a>
+      <a href="{% url 'login' %}" class="land-hero-btn-secondary">&#x1F511; Existing User? Login</a>
+    </div>
+    <div class="land-hero-stats">
+      <div class="hero-stat-item"><div class="hero-stat-num">50+</div><div class="hero-stat-label">Parking Slots</div></div>
+      <div class="hero-stat-item"><div class="hero-stat-num">AI</div><div class="hero-stat-label">Predictions</div></div>
+      <div class="hero-stat-item"><div class="hero-stat-num">24/7</div><div class="hero-stat-label">Available</div></div>
+      <div class="hero-stat-item"><div class="hero-stat-num">99%</div><div class="hero-stat-label">Uptime</div></div>
+    </div>
+  </div>
+
+  <div class="land-hero-visual">
+    <div class="hero-parking-card">
+      <div class="hero-card-header">
+        <span class="hero-card-title">&#x1F17F; Parking Overview</span>
+        <span class="hero-card-badge">&#x1F7E2; Live</span>
+      </div>
+      <div class="hero-slot-grid" id="heroGrid">
+        <!-- Slots rendered by JS -->
+      </div>
+      <div class="hero-card-footer">
+        <p>Current Occupancy</p>
+        <div class="hero-progress">
+          <div class="hero-progress-bar" id="heroBar" style="width:42%"></div>
+        </div>
+        <p style="margin-top:6px;font-size:0.82rem;color:#A64AC9;font-weight:600;">42% Occupied — Slots Available!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="land-features" id="features">
+  <div class="land-section-title">
+    <div class="land-section-tag">Why Choose Us</div>
+    <h2>Everything You Need for<br>Smart Parking</h2>
+    <p>From AI-driven predictions to real-time slot tracking — we've built the complete parking solution.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon fi-purple">&#x1F916;</div>
+      <h3>AI Occupancy Prediction</h3>
+      <p>Our machine learning model predicts peak hours, crowd patterns, and when slots will be free — so you always plan ahead.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-yellow">&#x26A1;</div>
+      <h3>Instant Slot Booking</h3>
+      <p>Browse available slots on an interactive map and reserve your spot in seconds. Receive a unique booking reference instantly.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-teal">&#x1F5FA;&#xFE0F;</div>
+      <h3>Visual Parking Map</h3>
+      <p>See every slot's real-time status — green (available), yellow (reserved), red (occupied) — on a visual floor map.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-orange">&#x1F4CA;</div>
+      <h3>Analytics Dashboard</h3>
+      <p>Comprehensive charts for revenue, occupancy trends, and booking history for both users and admins.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-purple">&#x1F4B0;</div>
+      <h3>Revenue Management</h3>
+      <p>Automatic billing at &#x20B9;50/hour. Admins get daily, weekly, and monthly revenue reports with visual charts.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-yellow">&#x1F512;</div>
+      <h3>Dual-Role System</h3>
+      <p>Separate dashboards for users and admins. Admins manage slots, view all bookings, and control the entire system.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="land-how" id="how">
+  <div class="land-section-title">
+    <div class="land-section-tag">How It Works</div>
+    <h2>Park Smarter in 4 Steps</h2>
+  </div>
+  <div class="how-steps">
+    <div class="how-step">
+      <div class="how-step-num">1</div>
+      <h3>Sign Up</h3>
+      <p>Create your free account in under a minute. No complex setup required.</p>
+    </div>
+    <div class="how-step">
+      <div class="how-step-num">2</div>
+      <h3>View the Map</h3>
+      <p>Open the live parking map to see available, reserved, and occupied slots in real time.</p>
+    </div>
+    <div class="how-step">
+      <div class="how-step-num">3</div>
+      <h3>Book Your Slot</h3>
+      <p>Select a slot, enter your details, choose duration, and confirm your reservation instantly.</p>
+    </div>
+    <div class="how-step">
+      <div class="how-step-num">4</div>
+      <h3>Park &amp; Go</h3>
+      <p>Arrive at your reserved slot. Cancel anytime if plans change — no hassle.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="land-cta">
+  <h2>Ready to Park Smarter?</h2>
+  <p>Join hundreds of drivers using Smart Parking System every day.</p>
+  <div class="land-cta-btns">
+    <a href="{% url 'register' %}" class="land-cta-btn1">&#x1F697; Sign Up Free</a>
+    <a href="{% url 'login' %}" class="land-cta-btn2">&#x1F511; Login</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="land-footer">
+  <div>&copy; 2026 Smart Parking System. All rights reserved.</div>
+  <div style="display:flex;gap:20px;">
+    <a href="{% url 'login' %}">User Login</a>
+    <a href="{% url 'admin_login' %}">Admin Login</a>
+    <a href="{% url 'register' %}">Sign Up</a>
+  </div>
+</footer>
+
+<script>
+// Animate hero parking grid
+(function(){
+  var statuses = ['av','av','av','oc','rv','av','oc','av','rv','av',
+                  'av','oc','av','av','oc','rv','av','av','av','oc'];
+  var labels   = statuses.map(function(s,i){
+    return s==='av'?'Free':s==='oc'?'Busy':'Rsv';
+  });
+  var grid = document.getElementById('heroGrid');
+  statuses.forEach(function(s,i){
+    var div = document.createElement('div');
+    div.className = 'hero-slot '+s;
+    div.innerHTML = '<span style="font-size:1rem">'+(s==='av'?'&#x1F7E2;':s==='oc'?'&#x1F534;':'&#x1F7E1;')+'</span><br>'+labels[i];
+    grid.appendChild(div);
+  });
+  // Animate bar
+  setTimeout(function(){document.getElementById('heroBar').style.width='65%';},600);
+})();
+</script>
+</body>
+</html>

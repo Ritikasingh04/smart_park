@@ -1,0 +1,41 @@
+{% extends 'adminpanel/base_admin.html' %}
+{% block title %}All Bookings - Admin{% endblock %}
+{% block page_title %}All Bookings{% endblock %}
+{% block anav_bookings %}active{% endblock %}
+
+{% block content %}
+<div style="margin-bottom:16px;"><a href="{% url 'adminpanel:dashboard' %}" class="btn-back">&#x2190; Back</a></div>
+
+<div class="card">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+    <div class="card-title">&#x1F4CB; All Bookings</div>
+    <span class="badge badge-purple">{{ bookings.count }} total</span>
+  </div>
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>#</th><th>Ref</th><th>User</th><th>Slot</th><th>Vehicle</th><th>Date</th><th>Start</th><th>Duration</th><th>Amount</th><th>Status</th><th>Booked At</th></tr></thead>
+      <tbody>
+      {% for b in bookings %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td><strong style="color:#A64AC9;">{{ b.booking_ref }}</strong></td>
+        <td>{{ b.user.username }}</td>
+        <td><span class="badge badge-purple">{{ b.slot.slot_number }}</span></td>
+        <td>{{ b.vehicle_number }}</td>
+        <td>{{ b.booking_date|date:"d M Y" }}</td>
+        <td>{{ b.start_time|time:"H:i" }}</td>
+        <td>{{ b.duration_hours }} hr{% if b.duration_hours != 1 %}s{% endif %}</td>
+        <td><strong>&#x20B9;{{ b.amount }}</strong></td>
+        <td>
+          {% if b.status == 'active' %}<span class="badge badge-success">Active</span>
+          {% elif b.status == 'cancelled' %}<span class="badge badge-danger">Cancelled</span>
+          {% else %}<span class="badge badge-gray">Completed</span>{% endif %}
+        </td>
+        <td>{{ b.booked_at|date:"d M Y H:i" }}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

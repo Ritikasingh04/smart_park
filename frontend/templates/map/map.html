@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}Parking Map - Smart Parking System{% endblock %}
+{% block page_title %}Parking Map{% endblock %}
+{% block nav_map %}active{% endblock %}
+
+{% block content %}
+<div style="margin-bottom:16px;"><a href="{% url 'dashboard:index' %}" class="btn-back">&#x2190; Back</a></div>
+
+{% if my_active_booking %}
+<div class="card" style="margin-bottom:20px;border-left:4px solid #A64AC9;background:linear-gradient(135deg,#f3e8ff,#e0fffe);">
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+    <div style="font-size:2rem;">&#x1F3AB;</div>
+    <div>
+      <div style="font-weight:700;font-size:1rem;color:#1a1a2e;">Your Reserved Slot: <span style="color:#A64AC9;">{{ my_active_booking.slot.slot_number }}</span></div>
+      <div style="font-size:0.85rem;color:#6b7280;">Vehicle: {{ my_active_booking.vehicle_number }} &nbsp;|&nbsp; Ref: {{ my_active_booking.booking_ref }} &nbsp;|&nbsp; {{ my_active_booking.booking_date }} at {{ my_active_booking.start_time|time:"H:i" }}</div>
+    </div>
+  </div>
+  <div class="route-info" style="margin-top:14px;">
+    <h4>&#x1F9ED; Route to Your Slot</h4>
+    <ul class="route-steps">
+      <li>Enter through the main entrance gate</li>
+      <li>Follow the painted arrows on the floor</li>
+      <li>
+        {% with row=my_active_booking.slot.row pos=my_active_booking.slot.position %}
+        Proceed to Row {{ row }} — count {{ pos }} slot(s) from the left
+        {% endwith %}
+      </li>
+      <li>Your slot <strong>{{ my_active_booking.slot.slot_number }}</strong> will be marked in yellow (Reserved)</li>
+      <li>Estimated walk: ~{{ my_active_booking.slot.position|add:my_active_booking.slot.position }} seconds from entrance</li>
+    </ul>
+  </div>
+</div>
+{% endif %}
+
+<div class="card">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
+    <div class="card-title">&#x1F5FA;&#xFE0F; Live Parking Map</div>
+    <div class="slot-legend">
+      <div class="slot-legend-item"><div class="legend-dot" style="background:#22c55e;"></div>Available</div>
+      <div class="slot-legend-item"><div class="legend-dot" style="background:#eab308;"></div>Reserved</div>
+      <div class="slot-legend-item"><div class="legend-dot" style="background:#ef4444;"></div>Occupied</div>
+      {% if my_active_booking %}<div class="slot-legend-item"><div class="legend-dot" style="background:#A64AC9;"></div>Your Slot</div>{% endif %}
+    </div>
+  </div>
+
+  <div class="map-container">
+    <div class="map-entrance">&#x1F6AA; MAIN ENTRANCE</div>
+
+    {% regroup slots by row as rows_grouped %}
+    {% for row_group in rows_grouped %}
+    <div style="margin-bottom:6px;">
+      <div class="map-aisle">— ROW {{ row_group.grouper }} —</div>
+      <div class="map-row">
+        {% for slot in row_group.list %}
+        {% if my_active_booking and slot.id == my_active_booking.slot.id %}
+        <div class="map-slot my-slot" title="YOUR SLOT: {{ slot.slot_number }}">
+          <span style="font-size:1rem;">&#x2B50;</span>
+          <span style="font-size:0.65rem;font-weight:700;">{{ slot.slot_number }}</span>
+          <span style="font-size:0.6rem;">YOURS</span>
+        </div>
+        {% else %}
+        <div class="map-slot {{ slot.status }}" title="Slot {{ slot.slot_number }} — {{ slot.status|capfirst }}">
+          <span style="font-size:1rem;">&#x1F697;</span>
+          <span style="font-size:0.65rem;font-weight:700;">{{ slot.slot_number }}</span>
+          <span style="font-size:0.6rem;">{{ slot.status|capfirst }}</span>
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+
+    <div style="text-align:center;margin-top:16px;padding:10px;background:#e5e7eb;border-radius:8px;font-size:0.8rem;font-weight:600;color:#6b7280;">
+      &#x1F197; EXIT
+    </div>
+  </div>
+</div>
+
+{% if not my_active_booking %}
+<div style="text-align:center;margin-top:20px;">
+  <a href="{% url 'booking:index' %}" class="btn btn-primary">&#x1F3AB; Book a Slot Now</a>
+</div>
+{% endif %}
+{% endblock %}

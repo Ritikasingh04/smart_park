@@ -1,0 +1,39 @@
+{% extends 'adminpanel/base_admin.html' %}
+{% block title %}All Users - Admin{% endblock %}
+{% block page_title %}All Users{% endblock %}
+{% block anav_users %}active{% endblock %}
+
+{% block content %}
+<div style="margin-bottom:16px;"><a href="{% url 'adminpanel:dashboard' %}" class="btn-back">&#x2190; Back</a></div>
+
+<div class="card">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+    <div class="card-title">&#x1F465; Registered Users</div>
+    <span class="badge badge-purple">{{ users.count }} total</span>
+  </div>
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>#</th><th>Username</th><th>Full Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Joined</th><th>Bookings</th></tr></thead>
+      <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td><strong>{{ u.username }}</strong></td>
+        <td>{{ u.get_full_name|default:"—" }}</td>
+        <td>{{ u.email|default:"—" }}</td>
+        <td>{% if u.profile %}{{ u.profile.phone|default:"—" }}{% else %}—{% endif %}</td>
+        <td>
+          {% if u.profile %}
+            {% if u.profile.is_admin %}<span class="badge badge-purple">Admin</span>
+            {% else %}<span class="badge badge-success">User</span>{% endif %}
+          {% else %}<span class="badge badge-gray">—</span>{% endif %}
+        </td>
+        <td>{{ u.date_joined|date:"d M Y" }}</td>
+        <td><span class="badge badge-warning">{{ u.bookings.count }}</span></td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

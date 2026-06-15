@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}My Bookings - Smart Parking System{% endblock %}
+{% block page_title %}My Bookings{% endblock %}
+{% block nav_mybookings %}active{% endblock %}
+
+{% block content %}
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+  <a href="{% url 'dashboard:index' %}" class="btn-back">&#x2190; Back</a>
+  <a href="{% url 'booking:index' %}" class="btn btn-primary btn-sm">+ New Booking</a>
+</div>
+
+{% if messages %}
+<ul class="messages">{% for m in messages %}<li class="{{ m.tags }}">{{ m }}</li>{% endfor %}</ul>
+{% endif %}
+
+<div class="card">
+  <div class="card-title" style="margin-bottom:16px;">&#x1F4CB; All My Bookings ({{ bookings.count }})</div>
+  {% if bookings %}
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr><th>Ref</th><th>Slot</th><th>Vehicle</th><th>Date</th><th>Start</th><th>Duration</th><th>Amount</th><th>Status</th><th>Action</th></tr>
+      </thead>
+      <tbody>
+      {% for b in bookings %}
+      <tr>
+        <td><strong>{{ b.booking_ref }}</strong></td>
+        <td><span class="badge badge-purple">{{ b.slot.slot_number }}</span></td>
+        <td>{{ b.vehicle_number }}</td>
+        <td>{{ b.booking_date }}</td>
+        <td>{{ b.start_time|time:"H:i" }}</td>
+        <td>{{ b.duration_hours }} hr{% if b.duration_hours != 1 %}s{% endif %}</td>
+        <td>&#x20B9;{{ b.amount }}</td>
+        <td>
+          {% if b.status == 'active' %}<span class="badge badge-success">Active</span>
+          {% elif b.status == 'cancelled' %}<span class="badge badge-danger">Cancelled</span>
+          {% else %}<span class="badge badge-gray">Completed</span>{% endif %}
+        </td>
+        <td>
+          {% if b.status == 'active' %}
+          <a href="{% url 'booking:cancel' b.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Cancel booking {{ b.booking_ref }}?')">Cancel</a>
+          {% else %}-{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div style="text-align:center;padding:40px;">
+    <p style="color:#6b7280;font-size:1rem;margin-bottom:16px;">No bookings yet.</p>
+    <a href="{% url 'booking:index' %}" class="btn btn-primary">&#x1F3AB; Book Your First Slot</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

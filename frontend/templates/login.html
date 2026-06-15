@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Login - Smart Parking System</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+  <link rel="stylesheet" href="{% static 'css/landing.css' %}"/>
+  <style>
+    body{background:linear-gradient(135deg,#f3e8ff 0%,#e0fffe 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:'Segoe UI',sans-serif;}
+    .auth-box{background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(166,74,201,.18);padding:44px 40px;width:100%;max-width:420px;}
+    .auth-logo{text-align:center;margin-bottom:28px;}
+    .auth-logo-icon{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#A64AC9,#17E9E0);display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin:0 auto 12px;}
+    .auth-logo h1{font-size:1.4rem;font-weight:800;color:#1a1a2e;}
+    .auth-logo p{font-size:0.85rem;color:#6b7280;}
+    .auth-tabs{display:flex;gap:0;margin-bottom:28px;border-radius:10px;overflow:hidden;border:2px solid #f3f4f6;}
+    .auth-tab{flex:1;padding:10px;text-align:center;font-weight:600;font-size:0.88rem;cursor:pointer;text-decoration:none;color:#6b7280;transition:all .2s;}
+    .auth-tab.active{background:linear-gradient(135deg,#A64AC9,#8a3aaa);color:white;}
+  </style>
+</head>
+<body>
+<div class="auth-box">
+  <div class="auth-logo">
+    <div class="auth-logo-icon">&#x1F17F;</div>
+    <h1>Smart Parking System</h1>
+    <p>Welcome back! Please login.</p>
+  </div>
+  <div class="auth-tabs">
+    <a href="{% url 'login' %}" class="auth-tab active">User Login</a>
+    <a href="{% url 'admin_login' %}" class="auth-tab">Admin Login</a>
+  </div>
+  {% if messages %}
+  <ul class="messages">{% for m in messages %}<li class="{{ m.tags }}">{{ m }}</li>{% endfor %}</ul>
+  {% endif %}
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label class="form-label">Username</label>
+      <input class="form-control" name="username" type="text" placeholder="Enter username" required/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input class="form-control" name="password" type="password" placeholder="Enter password" required/>
+    </div>
+    <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:13px;">Login &#x2192;</button>
+  </form>
+  <p style="text-align:center;margin-top:20px;font-size:0.88rem;color:#6b7280;">
+    No account? <a href="{% url 'register' %}" style="color:#A64AC9;font-weight:600;">Sign Up Free</a>
+  </p>
+  <p style="text-align:center;margin-top:8px;">
+    <a href="/" class="btn-back" style="font-size:0.82rem;">&#x2190; Back to Home</a>
+  </p>
+</div>
+</body>
+</html>

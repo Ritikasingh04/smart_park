@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>{% block title %}Admin - Smart Parking System{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root{--sidebar-w:260px;}
+    .sidebar{background:linear-gradient(180deg,#1a1a2e 0%,#0f3460 100%)!important;}
+    .sidebar-logo h1{color:#FCCD04!important;}
+    .nav-item.active{color:#FCCD04!important;border-left-color:#FCCD04!important;}
+    .admin-badge{background:#FCCD04;color:#1a1a2e;font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:50px;margin-left:auto;}
+  </style>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <h1>&#x1F6E1; Admin Panel</h1>
+      <span style="color:#17E9E0;">Smart Parking System</span>
+    </div>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" style="background:#FCCD04;color:#1a1a2e;">{{ request.user.username|first|upper }}</div>
+      <div class="sidebar-user-info">
+        <strong style="color:white;">{{ request.user.username }}</strong>
+        <small style="color:rgba(255,255,255,.5);">Administrator</small>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="{% url 'adminpanel:dashboard' %}" class="nav-item {% block anav_dash %}{% endblock %}">
+        <span class="nav-icon">&#x1F4CA;</span> Dashboard
+      </a>
+      <a href="{% url 'adminpanel:slots' %}" class="nav-item {% block anav_slots %}{% endblock %}">
+        <span class="nav-icon">&#x1F17F;</span> Manage Slots
+      </a>
+      <a href="{% url 'adminpanel:users' %}" class="nav-item {% block anav_users %}{% endblock %}">
+        <span class="nav-icon">&#x1F465;</span> All Users
+      </a>
+      <a href="{% url 'adminpanel:bookings' %}" class="nav-item {% block anav_bookings %}{% endblock %}">
+        <span class="nav-icon">&#x1F4CB;</span> All Bookings
+      </a>
+      <a href="{% url 'adminpanel:revenue' %}" class="nav-item {% block anav_revenue %}{% endblock %}">
+        <span class="nav-icon">&#x1F4B0;</span> Revenue
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="{% url 'logout' %}" class="btn btn-danger btn-sm" style="width:100%;justify-content:center;">&#x1F6AA; Logout</a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">&#9776;</button>
+        <h2>{% block page_title %}Admin{% endblock %}</h2>
+        <span class="admin-badge">ADMIN</span>
+      </div>
+      <div class="topbar-actions">
+        <a href="{% url 'logout' %}" class="btn btn-outline btn-sm">Logout</a>
+      </div>
+    </div>
+    <div class="page-body">
+      {% if messages %}
+      <ul class="messages">{% for m in messages %}<li class="{{ m.tags }}">{{ m }}</li>{% endfor %}</ul>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+</div>
+<script>
+document.addEventListener('click',function(e){
+  var sb=document.getElementById('sidebar');
+  if(window.innerWidth<=768&&sb.classList.contains('open')&&!sb.contains(e.target)){sb.classList.remove('open');}
+});
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>
