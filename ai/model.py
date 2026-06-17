@@ -9,7 +9,7 @@ MODEL_DIR = os.path.dirname(__file__)
 MODEL_PATH = os.path.join(MODEL_DIR, 'trained_model.pkl')
 SCALER_PATH = os.path.join(MODEL_DIR, 'scaler.pkl')
 
-
+# This is a comment. The code below builds the model.
 def build_occupancy_model():
     return RandomForestRegressor(n_estimators=100, random_state=42, max_depth=6)
 
