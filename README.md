@@ -1,234 +1,209 @@
-# 🅿 Smart Parking System
+# 🚗 Smart Parking System
+<p align="center">
+  <img src="screenshots/Screenshot%202026-06-17%20203855.png" width="900">
+</p>
+
+> An AI-Powered Parking Management System built using Django, Python, SQLite, HTML, CSS, JavaScript, and Machine Learning.
+
+![Python](https://img.shields.io/badge/Python-3.10+-blue?style=for-the-badge)
+![Django](https://img.shields.io/badge/Django-Framework-green?style=for-the-badge)
+![SQLite](https://img.shields.io/badge/SQLite-Database-lightgrey?style=for-the-badge)
+![Machine Learning](https://img.shields.io/badge/Machine-Learning-orange?style=for-the-badge)
 
 <p align="center">
   <img src="screenshots/Screenshot%202026-06-17%20203855.png" width="900">
 </p>
 
-AI-Powered Parking Management System built with Django, SQLite, Scikit-learn, and Chart.js.
+---
+
+## 🌟 Highlights
+
+- 🤖 AI-Based Parking Occupancy Prediction
+- 🅿️ Real-Time Parking Slot Monitoring
+- 📅 Online Parking Slot Reservation
+- 📊 Interactive Admin Dashboard
+- 📈 Revenue Analytics and Reports
+- 🔐 Secure User Authentication
+- 🗺️ Visual Parking Layout Management
 
 ---
 
-## 🚀 Quick Setup in VS Code (Step-by-Step)
+## 📖 Overview
 
-### Prerequisites
-- Python 3.10, 3.11, or 3.12 installed
-- VS Code installed
-- Git (optional)
+Smart Parking System is an intelligent parking management application developed using Django and Machine Learning technologies. The system helps users reserve parking spaces online while enabling administrators to efficiently manage parking slots, bookings, occupancy, and revenue.
 
----
-
-### Step 1: Open in VS Code
-
-1. **Extract** the `smart_parking_system` ZIP file to a folder (e.g. `C:\Projects\`)
-2. Open **VS Code**
-3. Click **File → Open Folder** → select `smart_parking_system`
+The application provides real-time parking availability, booking management, occupancy tracking, and AI-powered parking demand prediction. It aims to reduce parking congestion, improve space utilization, and enhance the overall parking experience.
 
 ---
 
-### Step 2: Select the Right Python Version
+## 🎯 Project Objective
 
-> ⚠️ You have 3 Python versions installed. We'll make sure to use the correct one.
-
-1. Press `Ctrl+Shift+P` → type **"Python: Select Interpreter"**
-2. Choose **Python 3.10+** (avoid 2.x)
-3. If unsure which to pick, open the VS Code terminal and run:
-   ```
-   py -0   (Windows — lists all Python versions)
-   ```
+The objective of this project is to develop a smart parking management system that automates parking operations, enables online reservations, monitors parking occupancy in real time, and predicts future parking demand using Machine Learning techniques.
 
 ---
 
-### Step 3: Open the Terminal
+## ✨ Features
 
-Press `` Ctrl+` `` to open the VS Code integrated terminal.
+### User Features
+
+- User Registration and Login
+- Secure Authentication
+- Online Parking Slot Reservation
+- Booking History Management
+- Profile Management
+- Real-Time Parking Availability
+
+### Parking Management
+
+- Parking Slot Management
+- Occupancy Monitoring
+- Interactive Parking Layout
+- Available, Reserved, and Occupied Slot Tracking
+
+### Admin Features
+
+- Admin Dashboard
+- User Management
+- Booking Management
+- Revenue Tracking
+- Parking Analytics
+
+### AI Features
+
+- Occupancy Prediction
+- Peak Hour Analysis
+- Demand Forecasting
+- Historical Trend Analysis
 
 ---
 
-### Step 4: Create a Virtual Environment
+## 💻 Technology Stack
 
-> This isolates the project's packages from your other Python installations.
+| Category | Technology |
+|-----------|------------|
+| Backend | Django |
+| Frontend | HTML, CSS, JavaScript |
+| Database | SQLite |
+| Programming Language | Python |
+| Machine Learning | Scikit-Learn |
+| Version Control | Git & GitHub |
 
-**Windows:**
-```bash
-py -3.11 -m venv venv
-venv\Scripts\activate
+---
+
+## 🏗️ System Architecture
+
+```text
+User
+ │
+ ▼
+Frontend (HTML, CSS, JavaScript)
+ │
+ ▼
+Django Backend
+ │
+ ├── Authentication Module
+ ├── Booking Module
+ ├── Dashboard Module
+ ├── Parking Map Module
+ └── Admin Module
+ │
+ ▼
+AI Prediction Engine
+ │
+ ▼
+SQLite Database
 ```
 
-**Mac/Linux:**
-```bash
-python3 -m venv venv
-source venv/bin/activate
+## 📂 Project Structure
+
+```text
+smart_park
+│
+├── ai
+├── backend
+├── database
+├── frontend
+├── screenshots
+├── sps
+├── README.md
+├── manage.py
+├── requirements.txt
+├── setup_and_run.bat
+└── setup_and_run.sh
 ```
 
-You should see `(venv)` at the start of your terminal prompt.
-
----
-
-### Step 5: Install Requirements
+## ⚙️ Installation
 
 ```bash
+git clone https://github.com/your-username/smart_park.git
+
+cd smart_park
+
 pip install -r requirements.txt
-```
 
-This installs: Django, scikit-learn, numpy, Pillow.
-
----
-
-### Step 6: Set Up the Database
-
-```bash
 python manage.py migrate
-```
 
----
-
-### Step 7: Seed Demo Data + Train AI Model
-
-```bash
-python manage.py seed_data
-```
-
-This creates:
-- **50 parking slots** (Rows A–E, 10 slots each)
-- **Admin account**: `admin` / `admin123`
-- **Demo user account**: `demo` / `demo1234`
-- **Sample booking history** (for charts)
-- **Trained AI model** (Scikit-learn Random Forest)
-
----
-
-### Step 8: Run the Server
-
-```bash
 python manage.py runserver
 ```
 
-Open your browser: **http://127.0.0.1:8000**
+Open:
 
----
-
-## 🔑 Login Credentials
-
-| Role  | Username | Password  | Redirects To      |
-|-------|----------|-----------|-------------------|
-| Admin | admin    | admin123  | Admin Dashboard   |
-| User  | demo     | demo1234  | User Dashboard    |
-
----
-
-## 📁 Project Structure
-
-```
-smart_parking_system/
-├── frontend/
-│   ├── templates/          ← All HTML pages
-│   │   ├── landing.html    ← Landing page
-│   │   ├── login.html
-│   │   ├── register.html
-│   │   ├── admin_login.html
-│   │   ├── base.html       ← User sidebar layout
-│   │   ├── dashboard/
-│   │   ├── booking/
-│   │   ├── map/
-│   │   ├── history/
-│   │   ├── profile/
-│   │   └── adminpanel/
-│   └── static/
-│       ├── css/
-│       │   ├── style.css   ← Main stylesheet
-│       │   └── landing.css ← Landing page styles
-│       ├── js/
-│       └── images/
-│
-├── backend/
-│   ├── authentication/     ← Login, Register, Logout
-│   ├── dashboard/          ← User Dashboard + AI charts
-│   ├── booking/            ← Slot booking system
-│   ├── map/                ← Visual parking map
-│   ├── history/            ← Booking history
-│   ├── profile/            ← User profile editor
-│   └── adminpanel/         ← Admin views + revenue
-│
-├── database/
-│   └── db.sqlite3          ← SQLite database
-│
-├── ai/
-│   ├── model.py            ← Scikit-learn model builder
-│   ├── training.py         ← Model training pipeline
-│   └── prediction.py       ← Prediction functions
-│
-├── sps/                    ← Django project config
-│   ├── settings.py
-│   └── urls.py
-│
-├── manage.py
-├── requirements.txt
-├── setup_and_run.bat       ← Windows one-click setup
-└── setup_and_run.sh        ← Mac/Linux one-click setup
+```text
+http://127.0.0.1:8000/
 ```
 
----
+## 🔄 Workflow
 
-## 🌐 Pages & Features
+```text
+User Login
+    │
+    ▼
+Check Available Slots
+    │
+    ▼
+Reserve Parking Slot
+    │
+    ▼
+Booking Confirmation
+    │
+    ▼
+Database Update
+    │
+    ▼
+Dashboard Analytics
+    │
+    ▼
+AI Prediction
+```
 
-### User Side
-| Page | URL | Description |
-|------|-----|-------------|
-| Landing | `/` | Public homepage with features |
-| Login | `/auth/login/` | User login |
-| Admin Login | `/auth/admin-login/` | Admin login |
-| Register | `/auth/register/` | New user signup |
-| Dashboard | `/dashboard/` | Slots + AI predictions + charts |
-| Book Slot | `/booking/` | Reserve a parking slot |
-| My Bookings | `/booking/my/` | View & cancel bookings |
-| Map | `/map/` | Visual parking floor map |
-| History | `/history/` | Full booking history |
-| Profile | `/profile/` | Edit profile info |
+## 🔮 Future Enhancements
 
-### Admin Side
-| Page | URL | Description |
-|------|-----|-------------|
-| Admin Dashboard | `/adminpanel/` | Stats + 4 revenue charts |
-| Manage Slots | `/adminpanel/slots/` | Change slot status manually |
-| All Users | `/adminpanel/users/` | View all registered users |
-| All Bookings | `/adminpanel/bookings/` | View all bookings + vehicles |
-| Revenue | `/adminpanel/revenue/` | Revenue records & totals |
+- QR Code-Based Entry System
+- RFID Integration
+- Mobile Application
+- Online Payment Gateway
+- IoT Sensor Integration
+- Cloud Deployment
 
----
+## 👨‍💻 Team Members
 
-## 🤖 AI Module
+| Member | Responsibility |
+|----------|---------------|
+| Ritika | Backend Development |
+| Sanjana | Frontend Development |
+| Sneha | Database Design |
+| Sahil | AI & Machine Learning |
 
-Located in `ai/`. Uses **Scikit-learn Random Forest Regressor**.
+## 📄 License
 
-- Trains on historical + synthetic booking data
-- Predicts hourly occupancy (0–100%)
-- Identifies peak hours (top 3 busiest)
-- Predicts next free slot availability time
-- Displays crowd level: Low / Medium / High
-- Dashboard charts update predictions in real time
-
----
-
-## 💡 Common Issues
-
-**"No module named django"**
-→ Make sure your virtual environment is activated: `venv\Scripts\activate`
-
-**"Port already in use"**
-→ Run on different port: `python manage.py runserver 8080`
-
-**"OperationalError: no such table"**
-→ Run `python manage.py migrate` again
-
-**CSS not loading**
-→ Confirm `DEBUG = True` in `sps/settings.py`
+This project was developed for educational and academic purposes.
 
 ---
 
-## 💰 Pricing
+<div align="center">
 
-Parking rate: **₹50 per hour** (configurable in `backend/booking/models.py`)
+### ⭐ Smart Parking System ⭐
 
----
+Intelligent Parking Management Through Artificial Intelligence
 
-*Built with ❤️ using Django + Scikit-learn + Chart.js*
+</div>
