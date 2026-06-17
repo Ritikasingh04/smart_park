@@ -1,5 +1,9 @@
 # 🅿 Smart Parking System
 
+<p align="center">
+  <img src="screenshots/landing-page.png" width="900">
+</p>
+
 AI-Powered Parking Management System built with Django, SQLite, Scikit-learn, and Chart.js.
 
 ---
