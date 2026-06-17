@@ -1,7 +1,5 @@
 # 🚗 Smart Parking System
-<p align="center">
-  <img src="screenshots/Screenshot%202026-06-17%20203855.png" width="900">
-</p>
+
 
 > An AI-Powered Parking Management System built using Django, Python, SQLite, HTML, CSS, JavaScript, and Machine Learning.
 
