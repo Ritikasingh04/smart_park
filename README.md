@@ -12,7 +12,7 @@
   <img src="screenshots/Screenshot%202026-06-17%20203855.png" width="900">
 </p>
 
----
+-----
 
 ## 🌟 Highlights
 
